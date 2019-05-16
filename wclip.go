@@ -34,7 +34,10 @@ func ClipboardToString(hData w32.HANDLE) string {
 
 	// Ideally we would find the len of HGLOBAL with (W32API) GlobalSize
 	// But it appears to be unimplemented in the w32 package as of writing.
-	wcLen := FindUint16Null(unsafe.Pointer(hData)) / 2
+	wcLen := FindUint16Null(unsafe.Pointer(hData))
+	if wcLen != 0 {
+		wcLen /= 2
+	}
 
 	buffer := cArray2Uint16Slice(unsafe.Pointer(hData), int(wcLen))
 	return syscall.UTF16ToString(buffer)
